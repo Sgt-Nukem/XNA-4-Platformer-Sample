@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
+using Microsoft.Xna.Framework.Audio;
 
 
 namespace Platformer
@@ -96,15 +97,29 @@ namespace Platformer
             loseOverlay = Content.Load<Texture2D>("Overlays/you_lose");
             diedOverlay = Content.Load<Texture2D>("Overlays/you_died");
 
-            //Known issue that you get exceptions if you use Media PLayer while connected to your PC
-            //See http://social.msdn.microsoft.com/Forums/en/windowsphone7series/thread/c8a243d2-d360-46b1-96bd-62b1ef268c66
-            //Which means its impossible to test this from VS.
-            //So we have to catch the exception and throw it away
-            try
-            {
-                MediaPlayer.IsRepeating = true;
-                MediaPlayer.Play(Content.Load<Song>("Sounds/Music"));
-            }
+            // Known issue that you get exceptions if you use Media PLayer while connected to your PC
+            // See http://social.msdn.microsoft.com/Forums/en/windowsphone7series/thread/c8a243d2-d360-46b1-96bd-62b1ef268c66
+            // Which means its impossible to test this from VS.
+            // So we have to catch the exception and throw it away
+			try
+			{
+				MediaPlayer.IsRepeating = true;
+				MediaPlayer.Play(Content.Load<Song>("Sounds/Music"));
+			}
+			catch (InvalidOperationException possibleMusicPlaybackException)
+			{
+				// This will throw when Windows Media Player is not available.
+				// This can happen if:
+				//    * the respective feature is turned off in Windows
+				//    * you have a 'N' edition of Windows installed, like 'Windows 8.1 Core N'
+				// In the former case, open the "Turn Windows features on or off" dialog in the control panel,
+				// then turn on "Windows Media Player" under "Media Features".
+				// In the later case you have to install the Media Feature Pack for your respective Windows version,
+				// see https://support.microsoft.com/help/3145500/media-feature-pack-list-for-windows-n-editions
+				// As XNA uses WMP DLLs under the hood, Windows Media Player is a required dependency for music playback.
+				NoAudioHardwareException audioException = new NoAudioHardwareException("Audio playback failed. Is WMP installed and enabled?", possibleMusicPlaybackException);
+				ShowMissingRequirementMessage(audioException);
+			}
 			catch { }
 
 			LoadNextLevel();
