@@ -65,16 +65,16 @@ namespace Platformer
         Vector2 velocity;
 
         // Constants for controling horizontal movement
-        private const float MoveAcceleration = 13000.0f;
-        private const float MaxMoveSpeed = 1750.0f;
-        private const float GroundDragFactor = 0.48f;
-        private const float AirDragFactor = 0.58f;
+        private const float MoveAcceleration = 14000.0f;
+        private const float MaxMoveSpeed = 2000.0f;
+        private const float GroundDragFactor = 0.58f;
+        private const float AirDragFactor = 0.65f;
 
         // Constants for controlling vertical movement
         private const float MaxJumpTime = 0.35f;
-        private const float JumpLaunchVelocity = -3500.0f;
-        private const float GravityAcceleration = 3400.0f;
-        private const float MaxFallSpeed = 550.0f;
+        private const float JumpLaunchVelocity = -4000.0f;
+        private const float GravityAcceleration = 3500.0f;
+        private const float MaxFallSpeed = 600.0f;
         private const float JumpControlPower = 0.14f; 
 
         // Input configuration

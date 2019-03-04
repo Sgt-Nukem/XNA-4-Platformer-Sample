@@ -45,9 +45,13 @@ namespace Platformer
         public Texture2D Texture;
         public TileCollision Collision;
 
-        public const int Width = 40;
-        public const int Height = 32;
-
+#if ZUNE
+        public const int Width = 30;
+        public const int Height = 20;
+#else
+        public const int Width = 64;
+        public const int Height = 48;
+#endif
         public static readonly Vector2 Size = new Vector2(Width, Height);
 
         /// <summary>

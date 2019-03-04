@@ -48,6 +48,11 @@ namespace Platformer
         private KeyboardState keyboardState;
         private TouchCollection touchState;
         private AccelerometerState accelerometerState;
+
+        private const int TargetFrameRate = 60;
+        private const int BackBufferWidth = 1280;
+        private const int BackBufferHeight = 720;
+        private const Buttons ContinueButton = Buttons.A;
         
         // The number of levels in the Levels directory of our content. We assume that
         // levels in our content are 0-based and that all numbers under this constant
@@ -58,14 +63,20 @@ namespace Platformer
         public PlatformerGame()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = BackBufferWidth;
+            graphics.PreferredBackBufferHeight = BackBufferHeight;
+
             Content.RootDirectory = "Content";
+
+            // Framerate differs between platforms.
+            TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / TargetFrameRate);
 
 #if WINDOWS_PHONE
             graphics.IsFullScreen = true;
-            TargetElapsedTime = TimeSpan.FromTicks(333333);
+            TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 30);
 #endif
 
-            Accelerometer.Initialize();
+			Accelerometer.Initialize();
         }
 
         /// <summary>
@@ -94,9 +105,9 @@ namespace Platformer
                 MediaPlayer.IsRepeating = true;
                 MediaPlayer.Play(Content.Load<Song>("Sounds/Music"));
             }
-            catch { }
+			catch { }
 
-            LoadNextLevel();
+			LoadNextLevel();
         }
 
         /// <summary>
@@ -130,7 +141,7 @@ namespace Platformer
 
             bool continuePressed =
                 keyboardState.IsKeyDown(Keys.Space) ||
-                gamePadState.IsButtonDown(Buttons.A) ||
+                gamePadState.IsButtonDown(ContinueButton) ||
                 touchState.AnyTouch();
 
             // Perform the appropriate action to advance the game and
